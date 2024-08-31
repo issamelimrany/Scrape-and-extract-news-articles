@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Article</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Add Article</h1>
+        <form method="POST" action="{{ url_for('add_article') }}">
+            <div class="form-group mt-3">
+                <label for="theme">Select Theme:</label>
+                <select class="form-control" id="theme" name="theme" onchange="updateFields()">
+                    <option value="Funding Rounds">Funding Rounds</option>
+                    <option value="Exits">Exits</option>
+                </select>
+            </div>
+            <div id="dynamicFields"></div>
+            <button type="submit" class="btn btn-primary mt-3">Add Article</button>
+        </form>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+    </div>
+
+    <script>
+        function updateFields() {
+            const theme = document.getElementById('theme').value;
+            const dynamicFields = document.getElementById('dynamicFields');
+            dynamicFields.innerHTML = '';
+
+            let fields;
+            if (theme === 'Funding Rounds') {
+                fields = ["Startup Name", "Country", "Year of Establishment", "Sector", "Amount Raised", "Valuation", "Announced Date", "Funding Stage", "Type of Funding", "Investors", "Lead Investors", "Founders", "CEO"];
+            } else {
+                fields = ["Announced Date", "Type", "Type of acquisition", "Companies", "Acquirer", "Acquiree", "Country of the acquiree", "Acquiree's Year of Establishment", "Sector of the acquiree", "Sector of Merged Company 1", "Sector of Merged Company 2", "Country of merged company 1", "Country of merged company 2", "Amount", "Stake acquired"];
+            }
+
+            fields.forEach(field => {
+                const div = document.createElement('div');
+                div.className = 'form-group mt-3';
+                div.innerHTML = `
+                    <label for="${field}">${field}:</label>
+                    <input type="text" class="form-control" id="${field}" name="${field}" required>
+                `;
+                dynamicFields.appendChild(div);
+            });
+        }
+
+        // Call updateFields() on page load to set initial fields
+        updateFields();
+    </script>
+</body>
+</html>
