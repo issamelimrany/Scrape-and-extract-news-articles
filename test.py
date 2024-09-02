@@ -1,11 +1,12 @@
 """
+
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-uri = "mongodb+srv://elimranyissam:omaxrvIzqZmZef6c@cluster0.x6xoo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = "mongodb+srv://marouanemisdak:U4CBaq7VyOcRBQ5s@cluster0.zi1gb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+# Create a new client and connect to the server with increased timeout settings
+client = MongoClient(uri, server_api=ServerApi('1'), serverSelectionTimeoutMS=5000)
 
 # Send a ping to confirm a successful connection
 try:
