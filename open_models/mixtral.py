@@ -79,8 +79,8 @@ def process_mixtral(input_file_path, theme):
     file_name = os.path.basename(input_file_path)
     print(f"Processing of {file_name} is complete. Results saved to MongoDB database.")
 
-test_path = "C:/Users/Issam/code/api/scraping/src/Output/Article_100.xlsx"
+#test_path = "C:/Users/Issam/code/api/scraping/src/Output/Article_100.xlsx"
 
-process_mixtral(test_path, "Funding Rounds")
+#process_mixtral(test_path, "Funding Rounds")
 
 
