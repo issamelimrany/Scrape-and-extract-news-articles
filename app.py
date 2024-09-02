@@ -193,7 +193,7 @@ def scrape_and_extract():
         output_structure = structure_config.get("structure") if structure_config else []
 
         # Process Excel files in the output folder
-        output_folder = f"C:/Users/Issam/code/api/scraping/src/Output/per_date/{target_date}"
+        output_folder = os.getenv('articles_output_path') + "/" + target_date
         excel_files = glob(os.path.join(output_folder, "*.xlsx"))
 
         for excel_file in excel_files:

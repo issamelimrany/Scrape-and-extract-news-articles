@@ -12,6 +12,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Function to extract base URL
 def extract_base_url(url):
@@ -182,7 +185,7 @@ def track_most_recent_date(soup, time_tag, time_class):
                 article_date = current_datetime - timedelta(hours=hours_ago)
             elif 'minute' in article_date_str:
                 minutes_ago = int(article_date_str.split()[0])
-                article_date = current_datetime - timedelta(minutes=minutes_ago)
+                article_date = current_datetime - timedelta(minutes_ago)
             
             article_date = article_date.date()  # Convert to date object
         else:
@@ -208,13 +211,13 @@ def date_found_in_page(soup, target_date, time_tag, time_class):
         if 'day' in article_date_str or 'hour' in article_date_str or 'minute' in article_date_str:
             if 'day' in article_date_str:
                 days_ago = int(article_date_str.split()[0])
-                article_date = current_datetime - timedelta(days=days_ago)
+                article_date = current_datetime - timedelta(days_ago)
             elif 'hour' in article_date_str:
                 hours_ago = int(article_date_str.split()[0])
-                article_date = current_datetime - timedelta(hours=hours_ago)
+                article_date = current_datetime - timedelta(hours_ago)
             elif 'minute' in article_date_str:
                 minutes_ago = int(article_date_str.split()[0])
-                article_date = current_datetime - timedelta(minutes=minutes_ago)
+                article_date = current_datetime - timedelta(minutes_ago)
 
             article_date = article_date.date()  # Convert to date object
 
@@ -266,13 +269,13 @@ def filter_and_scrape_articles(article_links, today):
     return results
 
 
-# Save results to individual CSV files
+# Save results to individual Excel files
 def save_articles_per_date(results, target_date):
     # Ensure the Output/per_date directory exists
     output_dir = os.path.join("api/src/Output", "per_date", str(target_date))
     os.makedirs(output_dir, exist_ok=True)
     
-    # Save each article to a separate CSV file
+    # Save each article to a separate Excel file
     for article in results:
         # Create a sanitized filename from the article title
         sanitized_title = "".join(x for x in article['title'] if x.isalnum() or x in "._- ").strip()
@@ -280,17 +283,14 @@ def save_articles_per_date(results, target_date):
             sanitized_title = "untitled_article"
         
         # Create the filename
-        file_name = f"{sanitized_title}.csv"
+        file_name = f"{sanitized_title}.xlsx"
         output_file = os.path.join(output_dir, file_name)
         
-        # Define the CSV header
-        keys = article.keys()
+        # Convert the article to a DataFrame
+        df = pd.DataFrame([article])
         
-        # Write the article to a CSV file
-        with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
-            dict_writer = csv.DictWriter(csvfile, fieldnames=keys)
-            dict_writer.writeheader()
-            dict_writer.writerow(article)
+        # Write the article to an Excel file
+        df.to_excel(output_file, index=False)
 
     print(f"Articles have been saved as individual files in the 'Output/per_date/{target_date}' directory.")
 

@@ -3,9 +3,13 @@ from groq import Groq
 import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
+key = os.getenv('groq_api_key')
 
 # Initialize Groq client
-client = Groq(api_key=os.getenv('groq_api_key'))
+client = Groq(api_key="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")
 
 # Initialize MongoDB client
 mongo_client = MongoClient(os.getenv('MONGO_URI'))
@@ -74,4 +78,9 @@ def process_mixtral(input_file_path, theme):
     # Print processing completion message
     file_name = os.path.basename(input_file_path)
     print(f"Processing of {file_name} is complete. Results saved to MongoDB database.")
+
+test_path = "C:/Users/Issam/code/api/scraping/src/Output/Article_100.xlsx"
+
+process_mixtral(test_path, "Funding Rounds")
+
 
