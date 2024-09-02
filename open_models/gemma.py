@@ -8,7 +8,8 @@ from datetime import datetime
 client = Groq(api_key=os.getenv('groq_api_key'))
 
 # Initialize MongoDB client
-mongo_client = MongoClient(os.getenv('MONGO_URI'))
+from pymongo.server_api import ServerApi
+mongo_client = MongoClient(os.getenv('MONGO_URI'), server_api=ServerApi('1'))
 db = mongo_client['app']
 config_collection = db['configurations_prompt']
 

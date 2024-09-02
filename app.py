@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, send_file, jsonify, redirect, url_for, flash
-from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
 import pandas as pd
 from datetime import datetime
 from bson.objectid import ObjectId
@@ -26,7 +26,9 @@ app.secret_key = "something"
 
 
 # MongoDB setup
-client = MongoClient(os.getenv('MONGO_URI'))
+from pymongo.server_api import ServerApi
+client = MongoClient(os.getenv('MONGO_URI'), server_api=ServerApi('1'))
+
 db = client['app']
 collection = db['app_collection'] # extracted data for each .xlsx article from the each folder
 articles_collection = db['articles_collection'] # Manually added articles     

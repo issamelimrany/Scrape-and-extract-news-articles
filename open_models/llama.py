@@ -2,13 +2,15 @@ import os
 from groq import Groq
 import pandas as pd
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 from datetime import datetime
+
 
 # Initialize Groq client
 client = Groq(api_key=os.getenv('groq_api_key'))
 
 # Initialize MongoDB client
-mongo_client = MongoClient(os.getenv('MONGO_URI'))
+mongo_client = MongoClient(os.getenv('MONGO_URI'), server_api=ServerApi('1'))
 db = mongo_client['app']
 config_collection = db['configurations_prompt']
 
