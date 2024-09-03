@@ -220,5 +220,27 @@ def scrape_and_extract():
     
     return render_template('scrape_and_extract.html')
 
+import csv
+@app.route('/add_website', methods=['GET', 'POST'])
+def add_website():
+    if request.method == 'POST':
+        page_url = request.form['page_url']
+        navigation_type = request.form['navigation_type']
+        time_tag = request.form['time_tag']
+        time_class = request.form['time_class']
+
+        # Path to the source.csv file
+        csv_file_path = os.path.join('.', 'scraping', 'Source', 'source.csv').replace('\\', '/')
+
+        # Append the new entry to the CSV file
+        with open(csv_file_path, 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([page_url, navigation_type, time_tag, time_class])
+
+        flash('Website added successfully!', 'success')
+        return redirect(url_for('add_website'))
+
+    return render_template('add_website.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
