@@ -2,7 +2,7 @@ import os
 from groq import Groq
 import pandas as pd
 from pymongo import MongoClient
-from pymongo.server_api import ServerApi
+
 from datetime import datetime
 
 
@@ -10,6 +10,7 @@ from datetime import datetime
 client = Groq(api_key=os.getenv('groq_api_key'))
 
 # Initialize MongoDB client
+from pymongo.server_api import ServerApi
 mongo_client = MongoClient(os.getenv('MONGO_URI'), server_api=ServerApi('1'))
 db = mongo_client['app']
 config_collection = db['configurations_prompt']

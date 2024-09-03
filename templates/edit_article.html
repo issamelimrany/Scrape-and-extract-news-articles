@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Article</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center">Edit Article</h1>
-        <form method="POST">
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold text-center mb-6">Edit Article</h1>
+        <form method="POST" id="editArticleForm" class="space-y-4">
             <div id="dynamicFields"></div>
-            <button type="submit" class="btn btn-primary mt-3">Update Article</button>
+            <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Article</button>
         </form>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+        <a href="{{ url_for('index') }}" class="mt-4 inline-block py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Back to Home</a>
     </div>
 
     <script>
@@ -30,11 +30,32 @@
 
         fields.forEach(field => {
             const div = document.createElement('div');
-            div.className = 'form-group mt-3';
             div.innerHTML = `
-                <label for="${field}">${field}:</label>
-                <input type="text" class="form-control" id="${field}" name="${field}" value="${articleData[field] || ''}" required>
+                <label for="${field}" class="block text-sm font-medium text-gray-700">${field}:</label>
             `;
+
+            if (field === "Announced Date") {
+                div.innerHTML += `
+                    <input type="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="${field}" name="${field}" value="${articleData[field] || ''}" required>
+                `;
+            } else if (field === "Amount Raised" || field === "Valuation" || field === "Amount") {
+                div.innerHTML += `
+                    <input type="number" step="0.01" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="${field}" name="${field}" value="${articleData[field] || ''}" required>
+                `;
+            } else if (field === "Year of Establishment" || field === "Acquiree's Year of Establishment") {
+                div.innerHTML += `
+                    <input type="number" min="1800" max="${new Date().getFullYear()}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="${field}" name="${field}" value="${articleData[field] || ''}" required>
+                `;
+            } else if (field === "Stake acquired") {
+                div.innerHTML += `
+                    <input type="number" step="0.01" min="0" max="100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="${field}" name="${field}" value="${articleData[field] || ''}" required>
+                `;
+            } else {
+                div.innerHTML += `
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="${field}" name="${field}" value="${articleData[field] || ''}" required>
+                `;
+            }
+
             dynamicFields.appendChild(div);
         });
 
@@ -47,8 +68,15 @@
             dynamicFields.appendChild(input);
         });
 
-        console.log('Article theme:', articleData.theme);
-        console.log('Fields:', fields);
+        // Form validation
+        document.getElementById('editArticleForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (this.checkValidity()) {
+                this.submit();
+            } else {
+                alert('Please fill in all required fields correctly.');
+            }
+        });
     </script>
 </body>
 </html>
