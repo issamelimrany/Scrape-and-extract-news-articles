@@ -1,5 +1,4 @@
 page_url,navigation_type,time_tag,time_class
 https://siliconcanals.com/news,pagination,time,entry-date published
-https://tech.eu/news/,load_more_button,span,post-date
+https://tech.eu/,pagination,time,entry-date published
 https://techlabari.com/news/,pagination,time,date published
-https://waya.media/,infinite_scroll,span,post-meta post-date
