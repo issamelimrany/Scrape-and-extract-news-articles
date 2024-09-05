@@ -14,7 +14,7 @@
             <div>
                 <label for="theme" class="block text-sm font-medium text-gray-700">Select Theme:</label>
                 <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="theme" name="theme" onchange="updateFields()">
-                    <option value="Funding Rounds">Funding Rounds</option>
+                    <option value="Funding rounds">Funding rounds</option>
                     <option value="Exits">Exits</option>
                 </select>
             </div>
@@ -31,7 +31,7 @@
             dynamicFields.innerHTML = '';
 
             let fields;
-            if (theme === 'Funding Rounds') {
+            if (theme === 'Funding rounds') {
                 fields = ["Startup Name", "Country", "Year of Establishment", "Sector", "Amount Raised", "Valuation", "Announced Date", "Funding Stage", "Type of Funding", "Investors", "Lead Investors", "Founders", "CEO"];
             } else {
                 fields = ["Announced Date", "Type", "Type of acquisition", "Companies", "Acquirer", "Acquiree", "Country of the acquiree", "Acquiree's Year of Establishment", "Sector of the acquiree", "Sector of Merged Company 1", "Sector of Merged Company 2", "Country of merged company 1", "Country of merged company 2", "Amount", "Stake acquired"];
