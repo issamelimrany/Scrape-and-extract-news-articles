@@ -16,7 +16,6 @@ from open_models.llama import process_llama
 from open_models.gemma import process_gemma
 from open_models.gemma2 import process_gemma2
 
-
 import os
 from glob import glob
 
@@ -188,33 +187,50 @@ def scrape_and_extract():
 
         # Get the configured LLM model
         config = config_collection.find_one({"config_type": "llm_model"})
-        selected_model = config.get("model") if config else "gemini"
-
+        selected_model = config.get("model") if config else "mixtral"
         # Get the configured output structure
         structure_config = config_collection_p.find_one({"config_type": "output_structure"})
         output_structure = structure_config.get("structure") if structure_config else []
 
         # Process Excel files in the output folder
-        output_folder = os.getenv('articles_output_path') + "/" + target_date
+        # Correctly format the date
+        date_object = datetime.strptime(target_date, "%d-%m-%Y")
+
+        # Use os.path.join to safely construct the path
+        output_folder = os.path.join(os.getenv('articles_output_path'), date_object.strftime("%Y-%m-%d"))
+
+        # Debugging: Check if output folder is correct
+        print("Output Folder:", output_folder)
+
+        # Check if the directory exists
+        if os.path.exists(output_folder):
+            print(f"Directory exists: {output_folder}")
+        else:
+            print(f"Directory does not exist: {output_folder}")
+
+        # List all .xlsx files in the directory using os.path.join
         excel_files = glob(os.path.join(output_folder, "*.xlsx"))
 
+        # Debugging: Show how many files are found
+        print("Number of Excel Files Found:", len(excel_files))
+  
         for excel_file in excel_files:
             if selected_model == "gpt-4o":
-                process_openai(excel_file, output_structure)
+                process_openai(excel_file)
             elif selected_model == "claude":
-                process_anthropic(excel_file, output_structure)
+                process_anthropic(excel_file)
             elif selected_model == "gemini":
-                process_gemini(excel_file, output_structure)
+                process_gemini(excel_file)
             elif selected_model == "mixtral":
-                process_mixtral(excel_file, output_structure)
+                process_mixtral(excel_file)
             elif selected_model == "llama":
-                process_llama(excel_file, output_structure)
+                process_llama(excel_file)
             elif selected_model == "gemma":
-                process_gemma(excel_file, output_structure)
+                process_gemma(excel_file)
             elif selected_model == "gemma2":
-                process_gemma2(excel_file, output_structure)
+                process_gemma2(excel_file)
             else:
-                process_mixtral(excel_file, output_structure)
+                process_mixtral(excel_file)
 
         return "Scraping and extraction completed successfully!"
     

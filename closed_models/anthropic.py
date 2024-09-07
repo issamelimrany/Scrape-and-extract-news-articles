@@ -3,6 +3,7 @@ from anthropic import Anthropic
 import pandas as pd
 from pymongo import MongoClient
 from datetime import datetime
+from open_models.trained_classifier import classify_article  # Added import for classifier
 
 # Initialize Anthropic client
 client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
@@ -40,29 +41,37 @@ def extract_information_anthropic(article_text, theme):
 def parse_extracted_info(info_text):
     return info_text.split(";")
 
-def process_anthropic(input_file_path, theme):
-    # Read the Excel file
+def process_anthropic(input_file_path):
+    themes = ["Funding Rounds", "Exits"]  # Define the themes to classify
     df = pd.read_excel(input_file_path)
     
-    # Initialize a list to store the results
     articles_data = []
 
-    # Get the output format for the theme
-    output_format, _ = get_config(theme)
-    output_fields = output_format.split(";")
-
     # Process each article
-    for article_text in df['Article Text']:
+    for index, row in df.iterrows():
+        article_text = row['Article Text']
+        link = row['link']  # Correctly accessing the 'link' column for each row
+
+        # Classify the article to determine the theme
+        theme = classify_article(article_text)
+
+        if theme not in themes: 
+            continue  
+
         # Extract and parse information
         extracted_info = extract_information_anthropic(article_text, theme)
         info_list = parse_extracted_info(extracted_info)
+
+        # Get the output format for the theme
+        output_format, _ = get_config(theme)
+        output_fields = output_format.split(";")
 
         # Create a dictionary for each article's data
         article_data = {field.strip(): info_list[i].strip() if i < len(info_list) else None 
                         for i, field in enumerate(output_fields)}
         
         # Add additional fields
-        article_data["link"] = "link"  # TODO: Replace with actual link
+        article_data["link"] = link  # Correctly assigning the 'link' value
         article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
         article_data["theme"] = theme
         

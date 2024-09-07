@@ -1,0 +1,18 @@
+[{
+  "_id": {
+    "$oid": "66d20ec5a73b6fe29dc5c5ef"
+  },
+  "config_type": "output_structure",
+  "theme": "Funding Rounds",
+  "structure": "Startup Name;Country;Year of Establishment;Sector;Amount Raised;Valuation;Announced Date;Funding Stage;Type of Funding;Investors;Lead Investors;Founders;CEO",
+  "prompt": "From this article {article_text}, extract the following info: {output_format}. Separate each info by ; and give them directly. If the info doesn't exist, just put None\r\n"
+},
+{
+  "_id": {
+    "$oid": "66d2ffd7a73b6fe29dc5e8b2"
+  },
+  "config_type": "output_structure",
+  "theme": "Exits",
+  "structure": "Announced Date;Type;Type of acquisition;Companies;Acquirer;Acquiree;Country of the acquiree;Acquiree's Year of Establishment;\tSector of the acquiree;Sector of Merged Company 1;Sector of Merged Company 2;Country of merged company 1;Country of merged company 2\t;Amount;Stake acquired",
+  "prompt": "From this article {article_text}, extract the following info: {output_format}. Separate each info by ; and give them directly. If the info doesn't exist, just put None"
+}]
