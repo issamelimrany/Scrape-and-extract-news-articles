@@ -49,7 +49,7 @@ def process_openai(input_file_path, theme):
     output_fields = output_format.split(";")
 
     # Process each article
-    for article_text in df['Article Text']:
+    for article_text in df['content']:
         # Extract and parse information
         extracted_info = extract_information_openai(article_text, theme)
         info_list = parse_extracted_info(extracted_info)

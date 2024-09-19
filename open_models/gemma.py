@@ -27,6 +27,10 @@ def extract_information_open(article_text, theme):
     if not output_format or not prompt_template:
         raise ValueError(f"Configuration for theme '{theme}' not found.")
 
+    print("+"*50)
+    print(prompt_template.format(article_text=article_text, output_format=output_format))
+    print("+"*50)
+
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -51,7 +55,7 @@ def process_gemma(input_file_path):
     articles_data = []
 
     for index, row in df.iterrows():
-        article_text = row['Article Text']
+        article_text = row['content']
 
         link = row['link']  # Correctly accessing the 'link' column for each row
 
@@ -62,6 +66,10 @@ def process_gemma(input_file_path):
 
         extracted_info = extract_information_open(article_text, theme)
         info_list = parse_extracted_info(extracted_info)
+        
+        print("-"*50)
+        print(extracted_info)
+        print("-"*50)
 
         output_format, _ = get_config(theme)
         output_fields = output_format.split(";")
@@ -70,7 +78,8 @@ def process_gemma(input_file_path):
                         for i, field in enumerate(output_fields)}
         
         article_data["link"] = link  
-        article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
+        # article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
+        article_data["published_date"] = pd.Timestamp(row['date'].value).to_pydatetime().strftime('%Y-%m-%d')
         article_data["theme"] = theme
         
         articles_data.append(article_data)

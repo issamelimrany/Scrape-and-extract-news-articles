@@ -70,7 +70,7 @@ def process_gemma2(input_file_path):
     # Process each article
 
     for index, row in df.iterrows():
-        article_text = row['Article Text']
+        article_text = row['content']
         link = row['link']  
 
         # Classify the article to determine the theme

@@ -56,7 +56,7 @@ def process_mixtral(input_file_path):
 
     # Process each article
     for index, row in df.iterrows():
-        article_text = row['Article Text']
+        article_text = row['content']
         link = row['link']  # Correctly accessing the 'link' column for each row
 
         # Classify the article to determine the theme

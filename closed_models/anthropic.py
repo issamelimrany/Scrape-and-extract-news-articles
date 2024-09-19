@@ -49,7 +49,7 @@ def process_anthropic(input_file_path):
 
     # Process each article
     for index, row in df.iterrows():
-        article_text = row['Article Text']
+        article_text = row['content']
         link = row['link']  # Correctly accessing the 'link' column for each row
 
         # Classify the article to determine the theme
@@ -72,7 +72,8 @@ def process_anthropic(input_file_path):
         
         # Add additional fields
         article_data["link"] = link  # Correctly assigning the 'link' value
-        article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
+        # article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
+        article_data["published_date"] = row['date']
         article_data["theme"] = theme
         
         # Add the dictionary to the list
