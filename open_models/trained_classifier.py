@@ -4,12 +4,13 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 
 # Loading the trained model  from the checkpoint
-model_path = "results/checkpoint-120"
+model_path = "open_models/results/checkpoint-120"
+
 tokenizer = AutoTokenizer.from_pretrained('roberta-base')
 model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
 def classify_article(article_text):
-    # Preprocessing the article text 
+    # Preprocessing the content 
     inputs = tokenizer(article_text, truncation=True, padding=True, return_tensors="pt")
     
     model.eval()
@@ -33,4 +34,4 @@ def classify_article(article_text):
 # Note : as you may know in any ML model, garbage in == garbage out, so I've remarked a pattern upon testing the model
 # so that the accurary remains as tested (97.5), the input article shall have those additional stuff present the given 
 # data (other than the article, see the data for more details), I've concluded that the model picked up some patterns
-# from there too, so for better results I would suggest to redo the training on a dataset that contains the pure article text.
+# from there too, so for better results I would suggest to redo the training on a dataset that contains the pure content.

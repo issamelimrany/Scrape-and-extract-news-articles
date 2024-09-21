@@ -1,8 +1,11 @@
 import os
+
+from groq import Groq
 import pandas as pd
-import google.generativeai as genai
 from pymongo import MongoClient
 from datetime import datetime
+import google.generativeai as genai
+from open_models.trained_classifier import classify_article  # Added import for classifier
 
 # Configure Google Generative AI
 API_KEY = os.getenv("GOOGLE_GENERATIVE_AI_API_KEY")
@@ -29,46 +32,58 @@ def extract_information_gemini(article_text, theme):
     if not output_format or not prompt_template:
         raise ValueError(f"Configuration for theme '{theme}' not found.")
 
+    print("+"*50)
+    print(prompt_template.format(article_text=article_text, output_format=output_format))
+    print("+"*50)
+    
     prompt = prompt_template.format(article_text=article_text, output_format=output_format)
     return model.generate_content(prompt).text
 
 def parse_extracted_info(info_text):
     return info_text.split(";")
 
-def process_gemini(input_file_path, theme):
+def process_gemini(input_file_path):
+    themes = ["Funding Rounds", "Exits"]  # Define the themes to classify
     # Read the Excel file
     df = pd.read_excel(input_file_path)
     
-    # Initialize a list to store the results
     articles_data = []
 
-    # Get the output format for the theme
-    output_format, _ = get_config(theme)
-    output_fields = output_format.split(";")
+    for index, row in df.iterrows():
+        article_text = row['content']
 
-    # Process each article
-    for article_text in df['Article Text']:
-        # Extract and parse information
+        link = row['link']  # Correctly accessing the 'link' column for each row
+
+        theme = classify_article(article_text)
+
+        if theme not in themes: 
+            continue  
+
         extracted_info = extract_information_gemini(article_text, theme)
         info_list = parse_extracted_info(extracted_info)
+        
+        print("-"*50)
+        print(extracted_info)
+        print("-"*50)
 
-        # Create a dictionary for each article's data
+        output_format, _ = get_config(theme)
+        output_fields = output_format.split(";")
+
         article_data = {field.strip(): info_list[i].strip() if i < len(info_list) else None 
                         for i, field in enumerate(output_fields)}
         
-        # Add additional fields
-        article_data["link"] = "link"  # TODO: Replace with actual link
-        article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
+        article_data["link"] = link  
+        # article_data["published_date"] = datetime.today().strftime('%Y-%m-%d')
+        article_data["published_date"] = pd.Timestamp(row['date'].value).to_pydatetime().strftime('%Y-%m-%d')
         article_data["theme"] = theme
         
-        # Add the dictionary to the list
         articles_data.append(article_data)
 
-    # Insert the articles data into the MongoDB collection
     collection = db['app_collection']
     collection.insert_many(articles_data)
     
-    # Print processing completion message
     file_name = os.path.basename(input_file_path)
+
     print(f"Processing of {file_name} is complete. Results saved to MongoDB database.")
+
 
